@@ -5,22 +5,12 @@ import { Redirect } from 'react-router-dom';
 const ws = new WebSocket('ws://localhost:1235/ws');
 
 
-const Store = ({appUser, setAppUser, updateTop}) => {
+const Store = ({appUser, setAppUser, updateTop, items}) => {
     
     
     const [cart, addCart] = React.useState([]);
-    const [items, setItems] = React.useState([]);
+    
     const [selectedItem, setSelectedItem] = React.useState('');
-
-    const addItem = (stringMessage) => {
-       
-        setItems((items) => {
-          const newItems = items.slice();
-          newItems.push(stringMessage.data);
-          
-          return newItems;
-        });
-    };
 
     const addToCart = () => {
         addCart( (cart) => {
@@ -32,10 +22,7 @@ const Store = ({appUser, setAppUser, updateTop}) => {
     }
 
     
-    React.useEffect(() => {
-        console.log("store test");
-        ws.addEventListener('message', addItem);  
-    }, []);
+  
 
    const itemSelector = (e) => {
         const val = e.currentTarget.value;

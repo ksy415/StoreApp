@@ -7,14 +7,31 @@ import Signup from './pages/Signup';
 import Store from './pages/Store';
 import StoreManager from './pages/StoreManager';
 
+const ws = new WebSocket('ws://localhost:1235/ws');
+
 const App = () => {
+  const [items, setItems] = React.useState([]);
   const [appUser, setAppUser] = React.useState(null);
 
   const rootUpdate = (item) => {
     console.log('APP', item);
   }
 
-  
+  React.useEffect(() => {
+    console.log("store test");
+    ws.addEventListener('message', addItem);  
+    }, []);
+
+const addItem = (stringMessage) => {
+       
+  setItems((items) => {
+    const newItems = items.slice();
+    newItems.push(stringMessage.data);
+    
+    return newItems;
+  });
+};
+
   return (
     <div>
       <nav>
@@ -32,7 +49,7 @@ const App = () => {
           <Signup appUser={appUser} setAppUser={setAppUser}/>
         </Route>
         <Route path="/store">
-          <Store appUser={appUser} setAppUser={setAppUser} updateTop={rootUpdate}/>
+          <Store appUser={appUser} setAppUser={setAppUser} updateTop={rootUpdate} items={items}/>
         </Route>
         <Route path="/storemanager">
           <StoreManager  appUser={appUser} setAppUser={setAppUser}/>
