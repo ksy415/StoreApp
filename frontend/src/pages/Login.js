@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-const Login = ({appUser, setAppUser}) => {
+const Login = ({appUser, setAppUser, setUser}) => {
 
   const[username, setUsername] = React.useState('');
   const[password, setPassword] = React.useState('');
@@ -13,12 +13,13 @@ const Login = ({appUser, setAppUser}) => {
       username: username,
       password: password,
     };
+
     axios.post('/api/authenticate', body)
       .then((res) => {
-        console.log(res.data);
+       // console.log(res.data);
         if(res.data.success) {
-          console.log('Worked!');
-          setAppUser(username);
+         // console.log('Worked!');
+          setUser(username);
         } else {
           setError(res.data.error);
         }
@@ -29,7 +30,8 @@ const Login = ({appUser, setAppUser}) => {
   };
 
   if(appUser) {
-    return <Redirect to ="/storemanager"/>  ;
+    //console.log(appUser);
+    return <Redirect to ="/store"/> ;
     
   }
   return (

@@ -13,46 +13,47 @@ const App = () => {
   const [items, setItems] = React.useState([]);
   const [appUser, setAppUser] = React.useState(null);
 
-  const rootUpdate = (item) => {
-    console.log('APP', item);
-  }
-
   React.useEffect(() => {
-    console.log("store test");
+    
     ws.addEventListener('message', addItem);  
     }, []);
 
-const addItem = (stringMessage) => {
-       
-  setItems((items) => {
-    const newItems = items.slice();
-    newItems.push(stringMessage.data);
-    
-    return newItems;
-  });
-};
+  const addItem = (stringMessage) => {
+        
+    setItems((items) => {
+      const newItems = items.slice();
+      newItems.push(stringMessage.data);
+      
+      return newItems;
+    });
+  };
+
+  const setUser = (username) => {
+    setAppUser(username);
+  //  console.log(username);
+  }  
 
   return (
     <div>
-      <nav>
+      <nav className="nav">
         <Link to="/"> Home </Link>
-        {appUser && <Link to="/login"> Login</Link>}
-        {appUser && <Link to="/signup"> Sign Up</Link>}
-        {!appUser && <Link to="/store">Store</Link>}
-        {!appUser && <Link to="/storemanager">Store Manager</Link>}
+        {<Link to="/login"> Login</Link>}
+        {<Link to="/signup"> Sign Up</Link>}
+        {<Link to="/store">Store</Link>}
+        {<Link to="/storemanager">Store Manager</Link>}
       </nav>
       <Switch>
         <Route path="/login">
-          <Login appUser={appUser} setAppUser={setAppUser}/>
+          <Login appUser={appUser} setAppUser={setAppUser} setUser={setUser}/>
         </Route>
         <Route path="/signup">
           <Signup appUser={appUser} setAppUser={setAppUser}/>
         </Route>
         <Route path="/store">
-          <Store appUser={appUser} setAppUser={setAppUser} updateTop={rootUpdate} items={items}/>
+          <Store appUser={appUser} setAppUser={setAppUser}  items={items}/>
         </Route>
         <Route path="/storemanager">
-          <StoreManager  appUser={appUser} setAppUser={setAppUser}/>
+          <StoreManager  appUser={appUser} setAppUser={setAppUser} items={items}/>
         </Route>
         <Route path="/">
           <Home />
