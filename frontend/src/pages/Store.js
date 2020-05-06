@@ -2,33 +2,52 @@ import axios from 'axios'
 import React from 'react'
 import { Redirect } from 'react-router-dom';
 
-const ws = new WebSocket('ws://localhost:1235/ws');
+//const ws = new WebSocket('ws://localhost:1235/ws');
 
 
-const Store = ({appUser, setAppUser, updateTop, items}) => {
+const Store = ({appUser, setAppUser, items}) => {
     
-    
-    const [cart, addCart] = React.useState([]);
-    
+    const [currentUser, setCurrentUser] = React.useState('');
+    const [cart, setCart] = React.useState([]);
     const [selectedItem, setSelectedItem] = React.useState('');
+    const[error, setError] = React.useState('');
 
-    const addToCart = () => {
-        addCart( (cart) => {
+   const itemSelector = (e) => {
+        const val = e.currentTarget.value;
+        //console.log(appUser);
+        setSelectedItem( () =>  val );
+   };
+
+   const handleAddtoCart = () => {
+
+        //console.log(`appUser = ${appUser}`);
+
+        setCart( (cartItem) => {
             const newCart = cart.slice();
             newCart.push(selectedItem);
-           
+        
             return newCart;
         })   
     }
 
-    
-  
+    const handleSubmit = () => {
 
-   const itemSelector = (e) => {
-        const val = e.currentTarget.value;
-        
-        setSelectedItem( () =>  val );
-   };
+     
+        cart.forEach( (item, i) => {
+            //console.log(`Transaction ${i}: ${appUser} + ${item}`);
+            const transaction = {
+                user: appUser,
+                item: item,
+            };
+            
+            axios.post("/api/addTransaction", transaction);
+                
+               
+        });
+            
+    }   
+
+   
 
     return (
         <div className='App'>
@@ -46,19 +65,23 @@ const Store = ({appUser, setAppUser, updateTop, items}) => {
                     ))}
                         
                 </select>
-                <button onClick={addToCart}>Add to cart</button>
+                <button onClick={handleAddtoCart}>Add to cart</button>
                 <br></br>
             </div>
-            <div>
-                <button>Checkout</button>
-            </div>
             <br></br>
-            <div>
-                {selectedItem}
+            <div className="cart">
+                <h1>Cart</h1>
+                <div>
+                    {cart.map( (cartItem, i) => (
+                        <div key={i}>{cartItem}</div>
+                    //  <button>Delete</button>
+                        
+                    ))}
+                </div>
+                <button onClick={handleSubmit}>Checkout</button>
             </div>
-            <div>
-              
-            </div>
+            
+        
         </div>
     )
 };

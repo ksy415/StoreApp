@@ -4,28 +4,14 @@ import { Redirect } from 'react-router-dom';
 
 const ws = new WebSocket('ws://localhost:1235/ws');
 
-const StoreManager = () => {
+const StoreManager = ({items, appUser}) => {
 
     const[name, setName] = React.useState('');
     const[price, setPrice] = React.useState('');
     const[error, setError] = React.useState('');
-    const[items, setItems] = React.useState([]);
-   
-  const addItem = (stringMessage) => {
-    //console.log(stringMessage.data); //incoming from server
-    setItems((items) => {
-      const newItems = items.slice();
-      newItems.push(stringMessage.data);
-      console.log(newItems);
-      return newItems;
-    });
-  };
 
-    React.useEffect(() => {
-      console.log("StoreManager test");
-      ws.addEventListener('message', addItem);
-      
-    }, []);
+   
+
 
     //sends the item to the server
     const handleAddItem = () => {
@@ -55,7 +41,8 @@ const StoreManager = () => {
 
 
     const handleDeleteItem = () => {
-        axios.post('api/deleteItem', name);
+      console.log(appUser)
+      //  axios.post('api/deleteItem', name);
             
     }
 
@@ -80,7 +67,7 @@ const StoreManager = () => {
                <div className="item" key={i}>
                   <div>{i}</div>
                   <div className="item-content">{items}</div>
-                   <button >Delete</button>
+                   <button onClick={handleDeleteItem}>Delete</button>
               </div>
               ))}
              </div>
