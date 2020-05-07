@@ -12,8 +12,9 @@ const ws = new WebSocket('ws://localhost:1235/ws');
 const App = () => {
   const [items, setItems] = React.useState([]);
   const [appUser, setAppUser] = React.useState(null);
+  const [admin, setAdmin] = React.useState(false);
 
-  React.useEffect(() => {
+  React.useEffect(() => { 
     
     ws.addEventListener('message', addItem);  
     }, []);
@@ -30,21 +31,23 @@ const App = () => {
 
   const setUser = (username) => {
     setAppUser(username);
-  //  console.log(username);
   }  
+
+  const setManager = () => setAdmin(true);
 
   return (
     <div>
       <nav className="nav">
-        <Link to="/"> Home </Link>
-        {<Link to="/login"> Login</Link>}
-        {<Link to="/signup"> Sign Up</Link>}
-        {<Link to="/store">Store</Link>}
-        {<Link to="/storemanager">Store Manager</Link>}
+        {<Link to="/"> Home </Link>}
+        {!appUser && <Link to="/login"> Login</Link>}
+        {!appUser && <Link to="/signup"> Sign Up</Link>}
+        {appUser && <Link to="/store">Store</Link>}
+        {admin && <Link to="/storemanager">Store Manager</Link>}
+        
       </nav>
       <Switch>
         <Route path="/login">
-          <Login appUser={appUser} setAppUser={setAppUser} setUser={setUser}/>
+          <Login appUser={appUser} setAppUser={setAppUser} setUser={setUser} setManager={setManager}/>
         </Route>
         <Route path="/signup">
           <Signup appUser={appUser} setAppUser={setAppUser}/>

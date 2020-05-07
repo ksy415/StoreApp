@@ -2,16 +2,13 @@ import axios from 'axios'
 import React from 'react'
 import { Redirect } from 'react-router-dom';
 
-const ws = new WebSocket('ws://localhost:1235/ws');
+ const ws = new WebSocket('ws://localhost:1235/ws');
 
 const StoreManager = ({items, appUser}) => {
 
     const[name, setName] = React.useState('');
     const[price, setPrice] = React.useState('');
     const[error, setError] = React.useState('');
-
-   
-
 
     //sends the item to the server
     const handleAddItem = () => {
@@ -41,8 +38,7 @@ const StoreManager = ({items, appUser}) => {
 
 
     const handleDeleteItem = () => {
-      console.log(appUser)
-      //  axios.post('api/deleteItem', name);
+      console.log(appUser);
             
     }
 

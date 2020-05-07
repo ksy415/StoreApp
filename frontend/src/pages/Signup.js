@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+
+
 const Signup = ({appUser, setAppUser}) => {
 
   const[username, setUsername] = React.useState('');

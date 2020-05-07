@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-const Login = ({appUser, setAppUser, setUser}) => {
+const Login = ({appUser, setAppUser, setUser, setManager}) => {
 
   const[username, setUsername] = React.useState('');
   const[password, setPassword] = React.useState('');
@@ -16,9 +16,7 @@ const Login = ({appUser, setAppUser, setUser}) => {
 
     axios.post('/api/authenticate', body)
       .then((res) => {
-       // console.log(res.data);
         if(res.data.success) {
-         // console.log('Worked!');
           setUser(username);
         } else {
           setError(res.data.error);
@@ -28,12 +26,17 @@ const Login = ({appUser, setAppUser, setUser}) => {
         setError("Failed to log in");
       });
   };
+  
 
   if(appUser) {
-    //console.log(appUser);
-    return <Redirect to ="/store"/> ;
-    
+    if(appUser === "admin") {
+      setManager();
+      return <Redirect to ="/storemanager"/>;
+    } else {
+      return <Redirect to ="/store"/> ;
+    }
   }
+
   return (
     <div>
       <h1>Login</h1>

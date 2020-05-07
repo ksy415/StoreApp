@@ -2,9 +2,6 @@ import axios from 'axios'
 import React from 'react'
 import { Redirect } from 'react-router-dom';
 
-//const ws = new WebSocket('ws://localhost:1235/ws');
-
-
 const Store = ({appUser, setAppUser, items}) => {
     
     const [currentUser, setCurrentUser] = React.useState('');
@@ -13,37 +10,37 @@ const Store = ({appUser, setAppUser, items}) => {
     const [transactionList, setTransactionList] = React.useState([]);
     
  
-    // React.useEffect(() => {
-    //    // if(transactionList.length === 0) {
-           
-    //    // }
-    // });
+     React.useEffect(() => {
+        
+        //Sets the selected item to the first item on the list when the component first mounts
+        if(selectedItem === '') {
+            setSelectedItem(items[0]);
+        }
 
-    const fetchTransactions = () => {
+     })
 
+    const listTransactions = () => {
         axios.get('/api/listTransactions')
-        .then((res) => {
-            setTransactionList(() => {
-                let myList = JSON.parse(res.data);
-                console.log(myList);
-                
-
-                return myList.transactionList;
-            });
-        });
+            .then((res) => {
+                setTransactionList(() => {
+                    let myList = JSON.parse(res.data);
+                    const arrList = [];
+                    myList.transactionList.forEach((transaction) => {
+                        arrList.push(transaction);
+                    })
+    
+                    return arrList;
+                });
+            });   
     };
  
    const itemSelector = (e) => {
-   // console.log(transactionList);
+        
         const val = e.currentTarget.value;
-        //console.log(appUser);
         setSelectedItem( () =>  val );
    };
 
    const handleAddtoCart = () => {
-
-        //console.log(`appUser = ${appUser}`);
-        
 
         setCart( () => {
             const newCart = cart.slice();
@@ -53,8 +50,8 @@ const Store = ({appUser, setAppUser, items}) => {
         })   
     }
 
-    const handleSubmit = () => {
-        //console.log(transactions.length);
+    const handleCheckout = () => {
+      
      
         cart.forEach( (item, i) => {
             console.log(`Transaction ${i}: ${appUser} + ${item}`);
@@ -71,15 +68,14 @@ const Store = ({appUser, setAppUser, items}) => {
                         console.log("Failed to add transaction");
                     }
                 })
-                .catch( () => "Error");
-
-                
-               
+                .catch( () => "Error");           
         });
             
-    };   
+    };  
 
-    
+    if(!appUser) {
+        return <Redirect to ="/login"/>;
+    }
 
     return (
         <div className='App'>
@@ -104,18 +100,26 @@ const Store = ({appUser, setAppUser, items}) => {
             <div className="cart">
                 <h1>Cart</h1>
                 <div>
-                    {cart.map( (cartItem, i) => (
-                        <div key={i}>{cartItem}</div>
-                    //  <button>Delete</button>
-                        
+                    {cart.map( (cartItem, i) => (         
+                        <div key={i}>
+                            {cartItem}
+                        </div>
                     ))}
                 </div>
-                <button onClick={handleSubmit}>Checkout</button>
+                <button onClick={handleCheckout}>Checkout</button>
             </div>
+       
             <div>
-                <button onClick={fetchTransactions}>List Transactions</button>
+                <button onClick={listTransactions}>List Transaction</button>
+                
+                {transactionList.map( (transaction, i) =>  {
+                    if(appUser === transaction.user)
+                    return (
+                    <div key={i}> User: {transaction.user} Item: {transaction.item}</div> 
+                    )
+                })}
+            
             </div>
-        
         </div>
     )
 };
